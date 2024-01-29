@@ -12,33 +12,47 @@ namespace MVC_Assignment3.Controllers
             {
                 list = new List<Employee>()
             {
-                new Employee() { Id =1, Name="Abhinav", Dept="IT", Salary=90000, JoiningDate=DateTime.Parse("12/12/2021") },
+                    new() { Id =1, Name="Chirag", DateOfJoining=DateTime.Parse("20/10/2023"), Department="IT", Salary=50000 },
 
-                new Employee() { Id =2, Name="Bala", Dept="IT", Salary=90000, JoiningDate=DateTime.Parse("12/12/2021") },
+                    new() {  Id =2, Name="Saurav", DateOfJoining=DateTime.Parse("21/11/2023"), Department="HR", Salary=500000  },
 
-                new Employee() { Id =3, Name="Modi", Dept="IT", Salary=90000, JoiningDate=DateTime.Parse("12/12/2021") },
+                    new() {  Id =3, Name="Animesh", DateOfJoining=DateTime.Parse("03/05/2003"), Department="Sales", Salary=50000  }
             };
             }
         }
+
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult Checkdate(DateTime DateOfJoining)
+        {
+            if (DateOfJoining <= DateTime.Now)
+                return Json(data: true);
+            else
+                return Json(data: false);
+        }
+
         public IActionResult Index()
         {
-
             return View(list);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Add()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Employee employee)
+        public IActionResult Add(Employee employee)
         {
-            list.Add(employee);
-            //return View();
-            return RedirectToAction("Index");
-
+            if (ModelState.IsValid)
+            {
+                list.Add(employee);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public IActionResult Display(int? id)
@@ -58,9 +72,8 @@ namespace MVC_Assignment3.Controllers
                 else
                     return View(employee);
             }
-
-
         }
+
         public IActionResult Delete(int? id)
         {
             if (!id.HasValue)
@@ -78,9 +91,8 @@ namespace MVC_Assignment3.Controllers
                 else
                     return View(employee);
             }
-
-
         }
+
         [HttpPost]
         public IActionResult Delete(Employee employee, int id)
         {
@@ -88,8 +100,8 @@ namespace MVC_Assignment3.Controllers
             if (temp != null)
                 list.Remove(temp);
             return RedirectToAction("Index");
-
         }
+
         public IActionResult Edit(int? id)
         {
             if (!id.HasValue)
@@ -116,20 +128,19 @@ namespace MVC_Assignment3.Controllers
             var temp = list.Where(x => x.Id == id).FirstOrDefault();
             if (temp != null)
             {
-                foreach (Employee stu in list)
+                foreach (Employee emp in list)
                 {
-                    if (stu.Id == temp.Id)
+                    if (emp.Id == employee.Id)
                     {
-                        stu.Dept = employee.Dept;
-                        stu.Salary = employee.Salary;
+                        emp.Name = employee.Name;
+                        emp.Salary = employee.Salary;
+                        emp.DateOfJoining = employee.DateOfJoining;
+                        emp.Department = employee.Department;
                         break;
                     }
-
-
                 }
             }
             return RedirectToAction("Index");
-
         }
 
     }
